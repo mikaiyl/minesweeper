@@ -1,0 +1,22 @@
+{
+  "name": "minesweeper",
+  "version": "1.0.0",
+  "description": "Minesweeper Clone",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mikaiyl/minesweeper.git"
+  },
+  "author": "Mikaiyl",
+  "license": "GPL-2.0",
+  "bugs": {
+    "url": "https://github.com/mikaiyl/minesweeper/issues"
+  },
+  "homepage": "https://github.com/mikaiyl/minesweeper#readme",
+  "devDependencies": {
+    "reload": "^2.2.2"
+  }
+}

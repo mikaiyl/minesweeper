@@ -1,0 +1,31 @@
+:root {
+	--cell-size: 20px;
+}
+
+h1 {
+	position: relative;
+	top: 20px;
+	left: 10px;
+	z-index: 1;
+}
+
+.cell {
+    height: var(--cell-size);
+    width: var(--cell-size);
+	border: 1px solid;
+}
+
+#game {
+    display: grid;
+    grid-gap: 0.1em;
+    margin: 10px;
+	width: calc(var(--cell-size) * 8 );
+}
+
+#main {
+	height: 100%;
+	display: flex;
+	flex-flow: column wrap;
+	justify-content: space-around;
+	align-content: center;
+}
