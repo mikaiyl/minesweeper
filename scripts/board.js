@@ -36,18 +36,26 @@ Board.prototype.setBoardValue = function ( row, col, value ) {
     return this;
 };
 
+Board.prototype.getBoardValue = function ( row, col ) {
+    return this.boardModel[row][col];
+};
+
 //
 Board.prototype.layMinefield = function( initRow, initCol, numOfMines ) {
     let minePositions = [ [ initRow, initCol ] ];
     this.flags = numOfMines;
-
-    while ( minePositions.length <= numOfMines + 1 ) {
+    debugger
+    this.setBoardValue( initRow, initCol, 'I' );
+    for ( let index = 0; index <= numOfMines + 1; ) {
         let [ row, col ] = [ Math.floor( Math.random() * this.width ), Math.floor( Math.random() * this.height ) ];
-        if ( !minePositions.includes( [ row, col ] ) ) {
+        if ( this.getBoardValue( row, col) !== 'M' && this.getBoardValue( row, col ) !== 'I' ) {
             minePositions.push( [ row, col ] );
             this.setBoardValue( row, col, 'M' );
+            index += 1;
         }
-    } return this;
+    }
+    this.setBoardValue( initRow, initCol, '0' );
+    return this;
 };
 
 
@@ -85,8 +93,6 @@ Board.prototype.setGridNumbers = function() {
                     if ( rowIndexWithOffset >= 0 && rowIndexWithOffset < this.boardModel.length && colIndexWithOffset >= 0 && colIndexWithOffset < this.boardModel[rowIndex].length ) {
                         if ( this.boardModel[ rowIndexWithOffset ][ colIndexWithOffset ] === 'M' ) {
                             numOfSurroundingMines += 1;
-                        } else {
-                            console.log(false);
                         }
                     }
                 }
@@ -108,7 +114,6 @@ Board.prototype.checkEmpty = function( cellClickedObj ) {
     // to complete the implementation of this method.
     //
     this.boardHTML[row][col].html.textContent = this.boardHTML[row][col].html.dataset.value;
-    debugger
     // Push the coordinates [row, col] onto the queue.
     // While the queue is not empty:
     let queue = [ [row, col] ];
@@ -120,7 +125,11 @@ Board.prototype.checkEmpty = function( cellClickedObj ) {
             [Number(c_row) + offset , c_col],
             [c_row, Number(c_col) + offset],
             [Number(c_row) - offset, c_col],
-            [c_row, Number(c_col) - offset] ] ) {
+            [c_row, Number(c_col) - offset],
+            [Number(c_row) + offset, Number(c_col) + offset],
+            [Number(c_row) - offset, Number(c_col) + offset],
+            [Number(c_row) - offset, Number(c_col) + offset],
+            [Number(c_row) + offset, Number(c_col) - offset] ] ) {
             //    Make sure you dont go off the board
             if ( d_row >= 0 && d_row < this.boardHTML.length && d_col >= 0 && d_col < this.boardHTML[0].length ) {
                 //    Check each of those 4 neighbors:
@@ -144,7 +153,10 @@ Board.prototype.checkEmpty = function( cellClickedObj ) {
 };
 
 Board.prototype.eventHandler = function(event) {
-    if ( event.type === 'mouseup' ) {
+    if ( event.type === 'mouseup' && state.initClick === true ) {
+        state.board.checkEmpty( state.cellClicked );
+    } else if ( state.initClick === false ) {
+        state.initClick = true;
         state.board.checkEmpty( state.cellClicked );
     }
 };

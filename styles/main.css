@@ -12,8 +12,42 @@ h1 {
 .cell {
     height: var(--cell-size);
     width: var(--cell-size);
-	border: 1px solid;
+	border: 1px solid black;
+    font-weight: bold;
 }
+
+.cell[data-turned='true'] {
+    background-color: green;
+}
+
+.cell[data-value='I'] {
+    color: green;
+}
+.cell[data-value='0'] {
+    color: green;
+}
+.cell[data-value='1'] {
+    color: blue;
+}
+.cell[data-value='2'] {
+    color: violet;
+}
+.cell[data-value='3'] {
+    color: red;
+}
+.cell[data-value='4'] {
+    color: brown;
+}
+.cell[data-value='5'] {
+    color: teal;
+}
+.cell[data-value='6'] {
+    color: black;
+}
+.cell[data-value='7'] {
+    color: grey;
+}
+
 
 #game {
     display: grid;
