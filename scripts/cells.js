@@ -45,6 +45,11 @@ Cell.prototype.handleEvent = function( event ) {
     }
 };
 
+Cell.prototype.setValue = function( value ) {
+    this.html.value = value;
+    return this;
+};
+
 Cell.prototype.getHTML = function() {
     this.html.addEventListener('mousedown', this.handleEvent );
     return this.html;

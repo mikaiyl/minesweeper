@@ -20,7 +20,6 @@ const Board = function( height, width, parent ) {
     this.flags = 0;
 
     // set row / col in onClick
-    this.lastMove = [ 0, 0 ];
     this.boardHTML = new Array();
 
     return this;
@@ -44,7 +43,6 @@ Board.prototype.getBoardValue = function ( row, col ) {
 Board.prototype.layMinefield = function( initRow, initCol, numOfMines ) {
     let minePositions = [ [ initRow, initCol ] ];
     this.flags = numOfMines;
-    debugger
     this.setBoardValue( initRow, initCol, 'I' );
     for ( let index = 0; index <= numOfMines + 1; ) {
         let [ row, col ] = [ Math.floor( Math.random() * this.width ), Math.floor( Math.random() * this.height ) ];
@@ -136,20 +134,32 @@ Board.prototype.checkEmpty = function( cellClickedObj ) {
                 //       If the neighbor is oldState:
                 if ( this.boardHTML[d_row][d_col].html.dataset.value === '0' && this.boardHTML[d_row][d_col].html.dataset.value !== 'M' && this.boardHTML[d_row][d_col].html.dataset.turned == 'false' ) {
                     //          Set the neighbor to new_color.
-                    this.boardHTML[d_row][d_col].html.textContent = this.boardHTML[d_row][d_col].html.dataset.value;
-                    this.boardHTML[d_row][d_col].html.dataset.turned = 'true';
+                    this.boardhtml[d_row][d_col].html.textcontent = this.boardhtml[d_row][d_col].html.dataset.value;
+                    this.boardhtml[d_row][d_col].html.dataset.turned = 'true';
                     //          Add the neighbors coordinates to the queue
                     //          (to ensure we later check its neighbors as well).
                     queue.push( [d_row, d_col] );
-                } else if ( this.boardHTML[d_row][d_col].html.dataset.value !== 'M' && this.boardHTML[d_row][d_col].html.dataset.turned == 'false' ) {
-                    //          Set the neighbor to new_color.
-                    this.boardHTML[d_row][d_col].html.textContent = this.boardHTML[d_row][d_col].html.dataset.value;
-                    this.boardHTML[d_row][d_col].html.dataset.turned = 'true';
+                // } else if ( this.boardHTML[d_row][d_col].html.dataset.value !== 'M'/* && this.boardHTML[d_row][d_col].html.dataset.turned == 'false'*/) {
+                // //     //          Set the neighbor to new_color.
+                //     this.boardHTML[d_row][d_col].html.textContent = this.boardHTML[d_row][d_col].html.dataset.value;
+                //     this.boardHTML[d_row][d_col].html.dataset.turned = 'true';
                 }
             }
         }
-    }
 
+        for ( let [d_row, d_col] of [
+            [Number(c_row) + offset , c_col],
+            [c_row, Number(c_col) + offset],
+            [Number(c_row) - offset, c_col],
+            [c_row, Number(c_col) - offset],
+            [Number(c_row) + offset, Number(c_col) + offset],
+            [Number(c_row) - offset, Number(c_col) + offset],
+            [Number(c_row) - offset, Number(c_col) + offset],
+            [Number(c_row) + offset, Number(c_col) - offset] ] ) {
+            this.boardhtml[d_row][d_col].html.textcontent = this.boardhtml[d_row][d_col].html.dataset.value;
+            this.boardhtml[d_row][d_col].html.dataset.turned = 'true';
+        }
+    }
 };
 
 Board.prototype.eventHandler = function(event) {
@@ -160,4 +170,3 @@ Board.prototype.eventHandler = function(event) {
         state.board.checkEmpty( state.cellClicked );
     }
 };
-

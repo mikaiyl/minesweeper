@@ -9,8 +9,10 @@
     <body>
         <div id="main">
             <h1>Minesweeper</h1>
+            <div id="game"></div>
         </div>
-        <script src="./scripts/cellClass.js"></script>
-        <script src="./scripts/boardClass.js"></script>
+        <script src="./scripts/board.js"></script>
+        <script src="./scripts/cells.js"></script>
+        <script src="./scripts/main.js"></script>
     </body>
 </html>

@@ -1,6 +1,4 @@
-:root {
-	--cell-size: 20px;
-}
+
 
 h1 {
 	position: relative;
@@ -9,6 +7,10 @@ h1 {
 	z-index: 1;
 }
 
+:root {
+	--cell-size: 20px;
+    --base-color: green;
+}
 .cell {
     height: var(--cell-size);
     width: var(--cell-size);
@@ -17,14 +19,10 @@ h1 {
 }
 
 .cell[data-turned='true'] {
-    background-color: green;
-}
-
-.cell[data-value='I'] {
-    color: green;
+    background-color: var(--base-color);
 }
 .cell[data-value='0'] {
-    color: green;
+    color: var(--base-color);
 }
 .cell[data-value='1'] {
     color: blue;
@@ -46,6 +44,9 @@ h1 {
 }
 .cell[data-value='7'] {
     color: grey;
+}
+.flag {
+    background: url(../images/flag.png);
 }
 
 
