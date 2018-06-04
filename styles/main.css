@@ -49,6 +49,12 @@ h1 {
     background: url(../images/flag.png);
 }
 
+#header {
+    display: flex;
+    flex-flow: row wrap;
+	width: calc(var(--cell-size) * 8 );
+    justify-content: space-around;
+}
 
 #game {
     display: grid;

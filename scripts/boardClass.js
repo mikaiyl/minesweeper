@@ -110,32 +110,31 @@ Board.prototype.checkEmpty = function( cellClickedObj ) {
         let [c_row, c_col] = queue.shift();
         //    The 4-connected neighbors are the cells above, below, left, and right.
         for ( let [d_row, d_col] of [
-            [Number(c_row) + offset , c_col],
+            [Number(c_row) + offset, c_col],
             [c_row, Number(c_col) + offset],
             [Number(c_row) - offset, c_col],
             [c_row, Number(c_col) - offset],
             [Number(c_row) + offset, Number(c_col) + offset],
             [Number(c_row) - offset, Number(c_col) + offset],
-            [Number(c_row) - offset, Number(c_col) + offset],
+            [Number(c_row) - offset, Number(c_col) - offset],
             [Number(c_row) + offset, Number(c_col) - offset] ] ) {
             //    Make sure you dont go off the board
-            debugger
-            if ( this.gameArray[d_row][d_col] >= 0 && d_row >= 0 && d_row < this.gameArray.length && d_col >= 0 && d_col < this.gameArray[0].length && !this.gameScreen[d_row][d_col].html.classList.contains('flag') ) {
+            if ( d_row >= 0 && d_row < this.gameArray.length && this.gameArray[d_row][d_col] >= 0 && d_col >= 0 && d_col < this.gameArray[0].length && !this.gameScreen[d_row][d_col].html.classList.contains('flag') ) {
                 //    Check each of those 4 neighbors:
                 //       If the neighbor is oldState:
                 if ( this.gameScreen[d_row][d_col].html.dataset.turned == 'false' && this.gameArray[d_row][d_col] !== 'M' ) {
                     //          Set the neighbor to new_color.
                     // this.gameArray[d_row][d_col].textContent = this.gameArray[d_row][d_col].dataset.value;
-                    this.gameScreen[d_row][d_col].html.dataset.turned = 'true';
-                    //          Add the neighbors coordinates to the queue
-                    //          (to ensure we later check its neighbors as well).
-                    if ( this.gameArray[d_row][d_col] === 0 ) {
-                        queue.push( [d_row, d_col] );
-                    }
 
-                    if ( this.gameArray[d_row][d_col] > 0 ) {
+                    if ( this.gameArray[d_row][d_col] > 0 && this.gameArray[row][col] === 0 ) {
                         this.gameScreen[d_row][d_col].html.textContent = this.gameArray[d_row][d_col];
                         this.gameScreen[d_row][d_col].html.dataset.value = this.gameArray[d_row][d_col];
+                        this.gameScreen[d_row][d_col].html.dataset.turned = 'true';
+                    } else if ( this.gameArray[d_row][d_col] === 0 && this.gameArray[row][col] === 0 ) {
+                        //          Add the neighbors coordinates to the queue
+                        //          (to ensure we later check its neighbors as well).
+                        this.gameScreen[d_row][d_col].html.dataset.turned = 'true';
+                        queue.push( [d_row, d_col] );
                     }
                 }
             }
@@ -152,6 +151,9 @@ const gameHTML = function( height = 10, width = 10, numOfMines = 10, parent ) {
 
     this.moveNumber = 0;
     this.clock = 0;
+    this.flagNum = numOfMines;
+    // this.status can be happy, worried or sad.
+    this.status = 'happy';
 
     this.game = document.createElement('div');
     this.game.id = 'game';
@@ -172,7 +174,36 @@ const gameHTML = function( height = 10, width = 10, numOfMines = 10, parent ) {
         this.gameScreen.push( cells );
     }
 
+    this.header = document.createElement('div');
+    this.header.id = 'header';
+
+    this.flagNumHTML = document.createElement('div');
+    this.setFlagNum = function () {
+        this.flagNumHTML.textContent = this.flagNum.toString();
+    };
+    this.header.appendChild( this.flagNumHTML );
+    this.setFlagNum();
+
+    this.statusHTML = document.createElement('div');
+    this.setStatus = function( status = this.status ) {
+        this.status = status;
+        this.statusHTML.textContent = this.status.toString();
+    };
+    this.header.appendChild( this.statusHTML );
+    this.setStatus();
+
+
+    this.clockHTML = document.createElement('div');
+    this.setClock = function() {
+        this.clockHTML.textContent = this.clock.toString();
+    };
+    this.header.appendChild( this.clockHTML );
+    this.setClock();
+
+    this.parent.appendChild( this.header );
+
     this.parent.appendChild( this.game );
+
     return this;
 };
 
@@ -187,12 +218,14 @@ gameHTML.prototype.eventHandler = function( event ) {
             // event.target.dataset.turned = 'true';
             setInterval( () => {
                 this.clock += 1;
+                this.setClock();
             }, 1000);
             this.moveNumber += 1;
             // this.gameArray[ Number(event.target.dataset.gridRow) - 1 ][ Number(event.target.dataset.gridCol) - 1 ]
         } else {
             this.moveNumber += 1;
             if ( this.gameArray[event.target.dataset.row][event.target.dataset.col] === 'M' ) {
+                this.setStatus( 'sad' );
                 alert('you lose');
             } else {
                 this.checkEmpty( {
@@ -203,8 +236,17 @@ gameHTML.prototype.eventHandler = function( event ) {
         }
     } else if ( event.type === 'contextmenu' ) {
         event.preventDefault();
-        event.target.dataset.value = 'F';
-        event.target.classList.add('flag');
+        if ( event.target.dataset.value === 'F' && event.target.dataset.turned === 'false' ) {
+            event.target.dataset.value = '0';
+            event.target.classList.remove('flag');
+            this.flagNum += 1;
+            this.setFlagNum();
+        } else if ( event.target.dataset.turned === 'false' ) {
+            event.target.dataset.value = 'F';
+            event.target.classList.add('flag');
+            this.flagNum += -1;
+            this.setFlagNum();
+        }
     }
 };
 
