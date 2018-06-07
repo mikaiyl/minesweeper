@@ -1,7 +1,9 @@
 const GameGenerator = function( height = 10, width = 10, numOfMines = 10 ) {
     this.height = height;
     this.width = width;
+    this.turnedTotal = 0;
     this.numOfMines = numOfMines;
+    this.goalTotal = this.height * this.width - this.numOfMines;
 };
 
 // Create the board class with given size
@@ -36,7 +38,7 @@ Board.prototype.getBoardValue = function ( row, col ) {
 Board.prototype.setMines = function ( initRow, initCol, numOfMines ) {
     // set init point to something other than 0
     this.setBoardValue( initRow, initCol, 'I' );
-    for ( let index = 0; index < numOfMines + 1; ) {
+    for ( let index = 0; index < numOfMines; ) {
         let [ row, col ] = [ Math.floor( Math.random() * this.width ), Math.floor( Math.random() * this.height ) ];
         if ( this.getBoardValue( row, col) === 0 ) {
             this.setBoardValue( row, col, 'M' );
@@ -102,6 +104,7 @@ Board.prototype.checkEmpty = function( cellClickedObj ) {
         this.gameScreen[row][col].html.dataset.value = this.gameArray[row][col];
     }
     this.gameScreen[row][col].html.dataset.turned = 'true';
+    this.turnedTotal += 1;
     // Push the coordinates [row, col] onto the queue.
     // While the queue is not empty:
     let queue = [ [row, col] ];
@@ -130,10 +133,12 @@ Board.prototype.checkEmpty = function( cellClickedObj ) {
                         this.gameScreen[d_row][d_col].html.textContent = this.gameArray[d_row][d_col];
                         this.gameScreen[d_row][d_col].html.dataset.value = this.gameArray[d_row][d_col];
                         this.gameScreen[d_row][d_col].html.dataset.turned = 'true';
+                        this.turnedTotal += 1;
                     } else if ( this.gameArray[d_row][d_col] === 0 && this.gameArray[row][col] === 0 ) {
                         //          Add the neighbors coordinates to the queue
                         //          (to ensure we later check its neighbors as well).
                         this.gameScreen[d_row][d_col].html.dataset.turned = 'true';
+                        this.turnedTotal += 1;
                         queue.push( [d_row, d_col] );
                     }
                 }
@@ -207,6 +212,12 @@ const gameHTML = function( height = 10, width = 10, numOfMines = 10, parent ) {
     return this;
 };
 
+gameHTML.reset = function() {
+    this.moveNumber = 0;
+    this.clock = 0;
+    this.status = 'happy';
+};
+
 gameHTML.prototype = Object.create( Board.prototype );
 gameHTML.prototype.constructor = gameHTML;
 
@@ -247,6 +258,11 @@ gameHTML.prototype.eventHandler = function( event ) {
             this.flagNum += -1;
             this.setFlagNum();
         }
+    }
+
+    // check win condition
+    if ( this.turnedTotal >= this.goalTotal ) {
+        alert('you win');
     }
 };
 
